@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión Expo: el tren y el árbol del proyecto | 4° 1° Algoritmos y Programación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e27;
+    --bg2: #111735;
+    --card: rgba(255, 255, 255, 0.04);
+    --border: rgba(0, 217, 255, 0.18);
+    --cyan: #00d9ff;
+    --blue: #4299e1;
+    --green: #00ff88;
+    --amber: #ffb547;
+    --text: #e6ecff;
+    --muted: #9aa6cc;
+    --code-bg: #060918;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: radial-gradient(circle at 15% 0%, #16204d 0%, var(--bg) 45%) fixed, var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.65;
+    font-size: 17px;
+  }
+  /* Barra de progreso de scroll */
+  #progreso {
+    position: fixed; top: 0; left: 0; height: 4px; width: 0;
+    background: linear-gradient(90deg, var(--blue), var(--cyan), var(--green));
+    z-index: 100; box-shadow: 0 0 12px var(--cyan);
+  }
+  .contenedor { max-width: 940px; margin: 0 auto; padding: 0 16px 60px; }
+
+  /* Encabezado */
+  header { text-align: center; padding: 64px 0 32px; }
+  .etiqueta {
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    color: var(--cyan); border: 1px solid var(--border); border-radius: 999px;
+    padding: 4px 14px; margin-bottom: 18px; letter-spacing: 1px;
+  }
+  h1 {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: clamp(1.7rem, 5vw, 2.8rem);
+    line-height: 1.2;
+    background: linear-gradient(90deg, var(--cyan), var(--blue));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitulo { color: var(--muted); margin-top: 10px; }
+
+  /* Cuenta regresiva */
+  .countdown {
+    margin: 28px auto 0; max-width: 420px; padding: 16px 20px;
+    border: 1px solid rgba(0, 255, 136, 0.35); border-radius: 14px;
+    background: rgba(0, 255, 136, 0.06);
+  }
+  .countdown .num { font-family: 'Orbitron', sans-serif; font-size: 2.4rem; color: var(--green); font-weight: 700; }
+  .countdown .txt { color: var(--muted); font-size: 0.95rem; }
+
+  /* Índice */
+  nav.indice { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 8px 0 36px; }
+  nav.indice a {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text);
+    text-decoration: none; padding: 6px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); transition: 0.2s;
+  }
+  nav.indice a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* Tarjetas glassmorphism */
+  section.card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 28px 26px; margin-bottom: 28px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  h2 {
+    font-family: 'Orbitron', sans-serif; font-size: 1.35rem; color: var(--cyan);
+    margin-bottom: 14px; letter-spacing: 0.5px;
+  }
+  h3 {
+    font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--blue);
+    margin: 26px 0 10px; letter-spacing: 0.5px;
+  }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 6px 0 14px 24px; }
+  li { margin-bottom: 6px; }
+  strong { color: #fff; }
+  code {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.88em;
+    background: rgba(0, 217, 255, 0.1); color: var(--cyan);
+    padding: 1px 6px; border-radius: 5px;
+  }
+
+  /* Misiones */
+  .mision {
+    border-left: 3px solid var(--cyan); padding: 4px 0 4px 18px; margin: 24px 0;
+  }
+  .mision.jefe { border-left-color: var(--amber); }
+  .mision.jefe h3 { color: var(--amber); }
+
+  /* Bloques de código con botón copiar */
+  .codigo { position: relative; margin: 14px 0 18px; }
+  .codigo pre {
+    background: var(--code-bg); border: 1px solid rgba(66, 153, 225, 0.25);
+    border-radius: 12px; padding: 18px 16px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.55;
+    color: #d6e2ff;
+  }
+  .codigo .lang {
+    position: absolute; top: 8px; left: 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+  }
+  .codigo.con-lang pre { padding-top: 32px; }
+  .copiar {
+    position: absolute; top: 8px; right: 8px; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; background: rgba(0, 217, 255, 0.12); color: var(--cyan);
+    border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+  }
+  .copiar:hover { background: rgba(0, 217, 255, 0.25); }
+  .copiar.ok { color: var(--green); border-color: var(--green); }
+  .com { color: #6f7fa8; }
+  .kw { color: #ff79c6; }
+  .str { color: #f1fa8c; }
+  .fn { color: var(--green); }
+
+  /* Tablas */
+  .tabla-wrap { overflow-x: auto; margin: 12px 0 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(0, 217, 255, 0.12); }
+  th { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.5px; }
+  tr:hover td { background: rgba(0, 217, 255, 0.04); }
+
+  /* Cajas destacadas */
+  .tip {
+    background: rgba(255, 181, 71, 0.08); border: 1px solid rgba(255, 181, 71, 0.35);
+    border-radius: 12px; padding: 12px 16px; margin: 14px 0;
+  }
+  .regla {
+    background: rgba(0, 255, 136, 0.07); border: 1px solid rgba(0, 255, 136, 0.35);
+    border-radius: 12px; padding: 14px 18px; margin-top: 16px;
+  }
+
+  /* Checklist de autoevaluación */
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li { margin-bottom: 8px; }
+  .checklist label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  .checklist input { margin-top: 5px; width: 18px; height: 18px; accent-color: var(--green); flex-shrink: 0; }
+  .checklist input:checked + span { color: var(--green); text-decoration: line-through; }
+  .barra-logro { height: 10px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin: 10px 0 4px; }
+  .barra-logro div { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--green)); transition: width 0.3s; }
+  #texto-logro { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--muted); }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 30px 0 10px; border-top: 1px solid var(--border); margin-top: 20px; }
+  footer .firma { font-family: 'Orbitron', sans-serif; color: var(--cyan); font-size: 0.8rem; letter-spacing: 1px; margin-top: 6px; }
+
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    section.card { padding: 22px 16px; }
+  }
+  @media print {
+    body { background: #fff; color: #000; }
+    #progreso, .copiar, nav.indice, .countdown { display: none; }
+    section.card { border: 1px solid #999; box-shadow: none; backdrop-filter: none; }
+    h1, h2, h3 { color: #000; -webkit-text-fill-color: #000; }
+    .codigo pre { background: #f4f4f4; color: #000; }
+  }
+</style>
+</head>
+<body>
+<div id="progreso"></div>
+
+<div class="contenedor">
+
+<header>
+  <span class="etiqueta">4° 1° · ALGORITMOS Y PROGRAMACIÓN · ACPI</span>
+  <h1>Misión Expo: el tren y el árbol del proyecto</h1>
+  <p class="subtitulo">Listas enlazadas y árboles binarios aplicados a nuestro proyecto de Expotécnica</p>
+  <div class="countdown">
+    <div class="num" id="dias">--</div>
+    <div class="txt">días para la entrega de la Expotécnica (11/11/2026)</div>
+  </div>
+</header>
+
+<nav class="indice">
+  <a href="#presentacion">Presentación</a>
+  <a href="#parte1">Parte 1 · Lista</a>
+  <a href="#parte2">Parte 2 · Árbol</a>
+  <a href="#parte3">Parte 3 · Expo Manager</a>
+  <a href="#entrega">Entrega</a>
+</nav>
+
+<!-- ==================== PRESENTACIÓN ==================== -->
+<section class="card" id="presentacion">
+  <h2>Presentación: la misión de hoy</h2>
+  <p>Hoy vamos a usar listas enlazadas y árboles binarios para organizar nuestro propio proyecto de Expotécnica. La entrega es el <strong>miércoles 11 de noviembre</strong>: faltan 5 semanas, y un buen programador organiza su trabajo con las estructuras de datos que conoce.</p>
+
+  <p><strong>Al terminar la clase vas a poder:</strong></p>
+  <ul>
+    <li>Armar y recorrer una lista enlazada con las tareas pendientes de tu proyecto.</li>
+    <li>Agregar y quitar tareas sin romper la lista.</li>
+    <li>Guardar proyectos en un árbol binario y encontrarlos en pocos pasos.</li>
+    <li>Explicar cuándo conviene cada estructura.</li>
+  </ul>
+
+  <p><strong>Las dos analogías que nos acompañan hoy:</strong></p>
+  <div class="tabla-wrap">
+    <table>
+      <tr><th>Estructura</th><th>Analogía</th><th>Para qué la usamos hoy</th></tr>
+      <tr><td>Lista enlazada</td><td>Un tren de vagones: cada vagón lleva una tarea y está enganchado al siguiente</td><td>La hoja de ruta de tu proyecto hasta el 11/11</td></tr>
+      <tr><td>Árbol binario de búsqueda</td><td>Un mapa con bifurcaciones: menor a la izquierda, mayor a la derecha</td><td>Encontrar rápido un proyecto por su número de stand</td></tr>
+    </table>
+  </div>
+
+  <div class="regla">Regla de oro del aula: <strong>primero se dibuja, después se programa.</strong> Cada misión con código va acompañada de su dibujo de cajas y flechas en la carpeta.</div>
+</section>
+
+<!-- ==================== PARTE 1 ==================== -->
+<section class="card" id="parte1">
+  <h2>Parte 1: El tren de tareas (lista enlazada)</h2>
+  <p>Una lista enlazada es un tren: cada vagón (nodo) guarda un dato y la dirección del vagón siguiente. Ningún vagón está adentro de otro; están sueltos y conectados por flechas.</p>
+
+  <h3>Ejemplo 1: la hoja de ruta de un proyecto</h3>
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="com"># El molde para fabricar vagones</span>
+<span class="kw">class</span> Nodo:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, tarea):
+        self.tarea = tarea        <span class="com"># lo que lleva este vagón</span>
+        self.siguiente = <span class="kw">None</span>     <span class="com"># todavía no está enganchado a nadie</span>
+
+<span class="com"># Fabrico tres vagones sueltos</span>
+t1 = Nodo(<span class="str">"Armar el circuito en protoboard"</span>)
+t2 = Nodo(<span class="str">"Programar el sensor de nivel"</span>)
+t3 = Nodo(<span class="str">"Hacer la web del proyecto"</span>)
+
+<span class="com"># Los engancho: t1 -&gt; t2 -&gt; t3 -&gt; None</span>
+t1.siguiente = t2
+t2.siguiente = t3
+
+<span class="com"># El cartero recorre el tren desde la locomotora</span>
+<span class="kw">def</span> <span class="fn">mostrar</span>(cabeza):
+    actual = cabeza
+    numero = 1
+    <span class="kw">while</span> actual <span class="kw">is not None</span>:
+        print(numero, <span class="str">"-"</span>, actual.tarea)
+        actual = actual.siguiente
+        numero += 1
+
+mostrar(t1)</pre></div>
+
+  <p>Dibujo en la carpeta:</p>
+<div class="codigo"><button class="copiar">copiar</button><pre> t1                    t2                    t3
+[Armar circuito | ●]--&gt;[Programar sensor | ●]--&gt;[Hacer la web | None]</pre></div>
+
+  <h3>Ejemplo 2: agregar una tarea urgente adelante</h3>
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="kw">def</span> <span class="fn">agregar_al_inicio</span>(cabeza, tarea):
+    nuevo = Nodo(tarea)       <span class="com"># fabrico el vagón nuevo</span>
+    nuevo.siguiente = cabeza  <span class="com"># lo engancho delante de la locomotora</span>
+    <span class="kw">return</span> nuevo              <span class="com"># ¡ahora él es la cabeza!</span>
+
+t1 = agregar_al_inicio(t1, <span class="str">"Comprar el sensor que falta"</span>)
+mostrar(t1)</pre></div>
+
+  <div class="tip">Ojo con el detalle: si te olvidás de guardar lo que devuelve la función (<code>t1 = ...</code>), la tarea nueva se pierde.</div>
+
+  <h3>Mini-desafíos</h3>
+  <ol>
+    <li>Copiá el ejemplo 1 y agregá una cuarta tarea al final: "Ensayar la presentación". Dibujá el tren antes de programar.</li>
+    <li>Escribí <code>contar(cabeza)</code> que devuelva cuántas tareas quedan.</li>
+    <li>Escribí <code>buscar(cabeza, palabra)</code> que devuelva <code>True</code> si alguna tarea contiene esa palabra. Pista: <code>if palabra in actual.tarea:</code></li>
+    <li>Pregunta para la carpeta: ¿por qué agregar al inicio es más rápido que agregar al final?</li>
+  </ol>
+</section>
+
+<!-- ==================== PARTE 2 ==================== -->
+<section class="card" id="parte2">
+  <h2>Parte 2: El mapa de stands (árbol binario de búsqueda)</h2>
+  <p>Un árbol binario de búsqueda es un mapa con bifurcaciones: en cada cruce, si lo que buscás es menor vas a la izquierda y si es mayor vas a la derecha. En cada paso descartás la mitad del camino.</p>
+
+  <h3>Ejemplo 3: cargar los stands de la Expo</h3>
+  <p>Los stands llegan en este orden: <code>14, 8, 22, 3, 11, 18, 27</code>. Así queda el árbol:</p>
+<div class="codigo"><button class="copiar">copiar</button><pre>              [14]
+            /      \
+         [8]        [22]
+        /   \      /    \
+      [3]  [11]  [18]   [27]</pre></div>
+
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="com"># El molde para fabricar cruces del mapa</span>
+<span class="kw">class</span> NodoArbol:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, stand, proyecto):
+        self.stand = stand          <span class="com"># número de stand (la "llave")</span>
+        self.proyecto = proyecto    <span class="com"># nombre del proyecto</span>
+        self.izq = <span class="kw">None</span>             <span class="com"># camino de los menores</span>
+        self.der = <span class="kw">None</span>             <span class="com"># camino de los mayores</span>
+
+<span class="kw">def</span> <span class="fn">insertar</span>(raiz, stand, proyecto):
+    <span class="kw">if</span> raiz <span class="kw">is None</span>:                        <span class="com"># lugar vacío: me ubico acá</span>
+        <span class="kw">return</span> NodoArbol(stand, proyecto)
+    <span class="kw">if</span> stand &lt; raiz.stand:                  <span class="com"># menor: voy a la izquierda</span>
+        raiz.izq = insertar(raiz.izq, stand, proyecto)
+    <span class="kw">else</span>:                                   <span class="com"># mayor: voy a la derecha</span>
+        raiz.der = insertar(raiz.der, stand, proyecto)
+    <span class="kw">return</span> raiz</pre></div>
+
+  <h3>Ejemplo 4: buscar un stand contando pasos</h3>
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="kw">def</span> <span class="fn">buscar</span>(raiz, stand):
+    actual = raiz
+    pasos = 0
+    <span class="kw">while</span> actual <span class="kw">is not None</span>:
+        pasos += 1
+        print(<span class="str">"Visito el stand"</span>, actual.stand)
+        <span class="kw">if</span> stand == actual.stand:
+            print(<span class="str">"¡Encontrado en"</span>, pasos, <span class="str">"pasos!"</span>)
+            <span class="kw">return</span> actual.proyecto
+        <span class="kw">elif</span> stand &lt; actual.stand:
+            actual = actual.izq
+        <span class="kw">else</span>:
+            actual = actual.der
+    print(<span class="str">"No existe ese stand"</span>)
+    <span class="kw">return None</span></pre></div>
+
+  <h3>Mini-desafíos</h3>
+  <ol>
+    <li>En la carpeta: ¿qué stands visita la búsqueda del 18? ¿Y la del 5, que no existe? Escribí el camino antes de ejecutar.</li>
+    <li>Cargá los 7 stands con <code>insertar</code> y comprobá tu respuesta con <code>buscar</code>.</li>
+    <li>Dibujá el árbol si los stands llegan ordenados: <code>3, 8, 11, 14, 18, 22, 27</code>. ¿Cuántos pasos lleva ahora encontrar el 27? ¿Qué forma tiene?</li>
+    <li>Pregunta para la carpeta: ¿dónde está siempre el stand con el número más chico?</li>
+  </ol>
+</section>
+
+<!-- ==================== PARTE 3 ==================== -->
+<section class="card" id="parte3">
+  <h2>Parte 3: Actividad central — Expo Manager</h2>
+  <p>En grupos de proyecto, van a programar el <strong>Expo Manager</strong>: un sistema que guarda la hoja de ruta de su proyecto en una lista enlazada y el catálogo de stands en un árbol binario. Usen tareas <strong>reales</strong> de su proyecto: al final de la clase se llevan un plan de trabajo hasta el 11/11.</p>
+
+  <h3>Código de arranque</h3>
+  <p>Creen el archivo <code>expo_manager.py</code> con esto:</p>
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="com"># ========== EXPO MANAGER ==========</span>
+<span class="com"># Grupo: ____________  Proyecto: ____________</span>
+
+<span class="kw">class</span> NodoTarea:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, tarea, responsable):
+        self.tarea = tarea
+        self.responsable = responsable
+        self.siguiente = <span class="kw">None</span>
+
+<span class="kw">class</span> NodoStand:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, stand, proyecto):
+        self.stand = stand
+        self.proyecto = proyecto
+        self.tareas = <span class="kw">None</span>      <span class="com"># acá va a vivir la cabeza de su lista de tareas</span>
+        self.izq = <span class="kw">None</span>
+        self.der = <span class="kw">None</span></pre></div>
+
+  <div class="mision">
+    <h3>Misión 1: La hoja de ruta</h3>
+    <p>Dibujen el tren y después prográmenlo. Carguen <strong>al menos 6 tareas reales</strong> que les faltan para el 11/11, en el orden en que las van a hacer, cada una con su responsable. Escriban <code>agregar_al_final(cabeza, tarea, responsable)</code> y <code>mostrar_tareas(cabeza)</code>.</p>
+    <p>Salida esperada (con sus propias tareas):</p>
+<div class="codigo"><button class="copiar">copiar</button><pre>1 - Comprar el sensor ultrasónico (Responsable: Julián)
+2 - Armar el circuito en protoboard (Responsable: Mica)
+...</pre></div>
+  </div>
+
+  <div class="mision">
+    <h3>Misión 2: ¡Tarea cumplida!</h3>
+    <p>Cuando terminan una tarea, sale la primera del tren. Escriban <code>completar_primera(cabeza)</code>: muestra "Tarea cumplida: ..." y devuelve la nueva cabeza. Prueben qué pasa si la lista está vacía y corríjanlo para que no se rompa.</p>
+  </div>
+
+  <div class="mision">
+    <h3>Misión 3: Llegó una urgencia</h3>
+    <p>El profe avisa que hay que entregar el resumen del proyecto antes que nada. Agreguen esa tarea <strong>al inicio</strong> con <code>agregar_al_inicio</code>. Muestren la lista antes y después.</p>
+  </div>
+
+  <div class="mision">
+    <h3>Misión 4: El catálogo de stands</h3>
+    <p>Carguen en el árbol estos stands, en este orden (o los proyectos reales del curso, si el profe ya asignó stands):</p>
+    <div class="tabla-wrap">
+      <table>
+        <tr><th>Stand</th><th>Proyecto</th></tr>
+        <tr><td>14</td><td>Monitor de tanque de agua</td></tr>
+        <tr><td>8</td><td>Riego automático de invernadero</td></tr>
+        <tr><td>22</td><td>Semáforo inteligente</td></tr>
+        <tr><td>3</td><td>Alarma de heladas</td></tr>
+        <tr><td>11</td><td>Contador de visitantes</td></tr>
+        <tr><td>18</td><td>Estación meteorológica</td></tr>
+        <tr><td>27</td><td>Cinta clasificadora</td></tr>
+      </table>
+    </div>
+    <p>Escriban <code>buscar_stand(raiz, stand)</code> que muestre cuántos pasos tardó y devuelva el nodo encontrado (o <code>None</code>).</p>
+  </div>
+
+  <div class="mision">
+    <h3>Misión 5: El folleto ordenado</h3>
+    <p>Para el folleto de la Expo, los stands tienen que salir ordenados de menor a mayor. Escriban <code>mostrar_catalogo(raiz)</code> con recorrido inorden: primero izquierda, después el nodo, después derecha.</p>
+<div class="codigo con-lang"><span class="lang">python</span><button class="copiar">copiar</button><pre><span class="kw">def</span> <span class="fn">mostrar_catalogo</span>(raiz):
+    <span class="kw">if</span> raiz <span class="kw">is not None</span>:
+        mostrar_catalogo(________)
+        print(<span class="str">"Stand"</span>, raiz.stand, <span class="str">"-"</span>, raiz.proyecto)
+        mostrar_catalogo(________)</pre></div>
+  </div>
+
+  <div class="mision jefe">
+    <h3>Misión 6 (jefe final): Todo conectado</h3>
+    <p>Cada stand del árbol tiene un atributo <code>tareas</code>. Busquen el stand de su proyecto y guárdenle ahí la cabeza de su hoja de ruta de la Misión 1. Después armen un menú:</p>
+<div class="codigo"><button class="copiar">copiar</button><pre>=== EXPO MANAGER ===
+1. Ver catálogo de stands
+2. Buscar un stand y ver sus tareas pendientes
+3. Completar la primera tarea de un stand
+4. Salir</pre></div>
+    <p>Pregunta para pensar: el árbol guarda el stand, y el stand "tiene" una lista. ¿La lista está adentro del nodo del árbol, o el nodo guarda una flecha hacia ella? Dibújenlo.</p>
+  </div>
+
+  <h3>Para la carpeta</h3>
+  <ol>
+    <li>¿Por qué usamos una lista enlazada para las tareas y no un árbol?</li>
+    <li>¿Por qué usamos un árbol para los stands y no una lista?</li>
+    <li>Con 7 stands, ¿cuántos pasos como máximo lleva encontrar uno en el árbol de la Misión 4? ¿Y en una lista?</li>
+  </ol>
+</section>
+
+<!-- ==================== ENTREGA ==================== -->
+<section class="card" id="entrega">
+  <h2>Entrega, autoevaluación y glosario</h2>
+  <p>Al cierre de la clase, cada grupo entrega el archivo <code>expo_manager.py</code> funcionando hasta la misión a la que llegó, más la carpeta con los dibujos y las respuestas. La hoja de ruta de la Misión 1 queda como plan de trabajo del grupo para la Expotécnica.</p>
+
+  <h3>Autoevaluación del grupo</h3>
+  <p>Marquen lo que lograron:</p>
+  <ul class="checklist">
+    <li><label><input type="checkbox"><span>Dibujamos el tren y el árbol antes de programar.</span></label></li>
+    <li><label><input type="checkbox"><span>Nuestra lista muestra al menos 6 tareas reales con responsable.</span></label></li>
+    <li><label><input type="checkbox"><span>Podemos completar una tarea sin que se rompa la lista, incluso si está vacía.</span></label></li>
+    <li><label><input type="checkbox"><span>Agregamos una tarea al inicio y la cabeza se actualizó bien.</span></label></li>
+    <li><label><input type="checkbox"><span>El árbol encuentra cualquier stand y muestra cuántos pasos tardó.</span></label></li>
+    <li><label><input type="checkbox"><span>El catálogo sale ordenado de menor a mayor.</span></label></li>
+    <li><label><input type="checkbox"><span>(Jefe final) El menú conecta cada stand con su lista de tareas.</span></label></li>
+    <li><label><input type="checkbox"><span>Podemos explicar con nuestras palabras cuándo conviene cada estructura.</span></label></li>
+  </ul>
+  <div class="barra-logro"><div id="relleno-logro"></div></div>
+  <div id="texto-logro">0 de 8 logros</div>
+
+  <h3>Glosario para la carpeta</h3>
+  <div class="tabla-wrap">
+    <table>
+      <tr><th>Término</th><th>Qué significa</th></tr>
+      <tr><td>Nodo</td><td>Cada "cajita" de la estructura: guarda un dato y una o más flechas</td></tr>
+      <tr><td>Referencia (puntero)</td><td>La flecha: la dirección donde está otro nodo, no el nodo mismo</td></tr>
+      <tr><td>Cabeza</td><td>El primer nodo de la lista enlazada; si se pierde, se pierde toda la lista</td></tr>
+      <tr><td>Raíz</td><td>El primer nodo del árbol, desde donde arranca toda búsqueda</td></tr>
+      <tr><td>None</td><td>Flecha vacía: no hay nada después</td></tr>
+      <tr><td>Recorrido inorden</td><td>Visitar izquierda, nodo, derecha: en un árbol de búsqueda sale todo ordenado</td></tr>
+      <tr><td>Recursión</td><td>Una función que se llama a sí misma con un problema más chico</td></tr>
+    </table>
+  </div>
+
+  <div class="regla">¡Mucha fuerza con el proyecto! Cada tarea que tachan de la lista es un vagón menos hasta la Expo.</div>
+</section>
+
+<footer>
+  Escuela Industrial N° 9 "15 de Noviembre" · El Calafate, Santa Cruz
+  <div class="firma">Prof. Pablo Limardo – Jefatura ACPI</div>
+</footer>
+
+</div>
+
+<script>
+  // Barra de progreso de scroll
+  const barra = document.getElementById('progreso');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    barra.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+  });
+
+  // Cuenta regresiva a la Expotécnica (11/11/2026)
+  const expo = new Date(2026, 10, 11);
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const dias = Math.round((expo - hoy) / 86400000);
+  const elDias = document.getElementById('dias');
+  if (dias > 0) {
+    elDias.textContent = dias;
+  } else if (dias === 0) {
+    elDias.textContent = '¡HOY!';
+  } else {
+    elDias.textContent = '✔';
+    elDias.nextElementSibling.textContent = 'La Expotécnica ya se realizó';
+  }
+
+  // Botones "copiar" de los bloques de código
+  document.querySelectorAll('.copiar').forEach(boton => {
+    boton.addEventListener('click', () => {
+      const texto = boton.parentElement.querySelector('pre').innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        boton.textContent = '¡copiado!';
+        boton.classList.add('ok');
+        setTimeout(() => { boton.textContent = 'copiar'; boton.classList.remove('ok'); }, 1500);
+      });
+    });
+  });
+
+  // Contador de logros de la autoevaluación
+  const checks = document.querySelectorAll('.checklist input');
+  const relleno = document.getElementById('relleno-logro');
+  const textoLogro = document.getElementById('texto-logro');
+  checks.forEach(c => c.addEventListener('change', () => {
+    const hechos = [...checks].filter(x => x.checked).length;
+    relleno.style.width = (hechos / checks.length * 100) + '%';
+    textoLogro.textContent = hechos === checks.length
+      ? '¡8 de 8 logros! Misión completa 🏆'
+      : hechos + ' de ' + checks.length + ' logros';
+  }));
+</script>
+</body>
+</html>
